@@ -9,9 +9,127 @@ import time
 
 # https://pynative.com/python-postgresql-select-data-from-table/
 
+def anime_query():
+    t = time.time()
+    try:
+        # Connecting to PostgreSQL
+        connection = psycopg2.connect(user = os.environ['PG_USER'],
+                                      password = os.environ['POSTGRES_PASS'],
+                                      host = "127.0.0.1",
+                                      port = "5432",
+                                      database = os.environ['PG_DB'])
 
+        #
+        cursor = connection.cursor()
 
-def anime_query(anime_chosen):
+        pg_query = """
+        SELECT *
+        FROM mal_anime
+        """
+
+        cursor.execute(pg_query)
+        print("Selecting rows from anime table using cursor.fetchall")
+
+        anime_data = np.array(cursor.fetchall())
+
+        print(anime_data)
+        print("Number of rows: ", len(anime_data,))
+        print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
+        return(anime_data)
+
+    except (Exception, psycopg2.Error) as error :
+        print ("Error while fetching data from PostgreSQL: ", error)
+
+    finally:
+        #closing database connection.
+            if(connection):
+                cursor.close()
+                connection.close()
+                print("PostgreSQL connection is closed")
+
+    print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
+
+def ratings_query():
+    t = time.time()
+    try:
+        # Connecting to PostgreSQL
+        connection = psycopg2.connect(user = os.environ['PG_USER'],
+                                      password = os.environ['POSTGRES_PASS'],
+                                      host = "127.0.0.1",
+                                      port = "5432",
+                                      database = os.environ['PG_DB'])
+
+        #
+        cursor = connection.cursor()
+
+        pg_query = """
+        SELECT *
+        FROM mal_ratings
+        """
+
+        cursor.execute(pg_query)
+        print("Selecting rows from ratings table using cursor.fetchall")
+
+        anime_data = np.array(cursor.fetchall())
+
+        print(anime_data)
+        print("Number of rows: ", len(anime_data,))
+        print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
+        return(anime_data)
+
+    except (Exception, psycopg2.Error) as error :
+        print ("Error while fetching data from PostgreSQL: ", error)
+
+    finally:
+        #closing database connection.
+            if(connection):
+                cursor.close()
+                connection.close()
+                print("PostgreSQL connection is closed")
+
+    print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
+
+def merge_query():
+    t = time.time()
+    try:
+        # Connecting to PostgreSQL
+        connection = psycopg2.connect(user = os.environ['PG_USER'],
+                                      password = os.environ['POSTGRES_PASS'],
+                                      host = "127.0.0.1",
+                                      port = "5432",
+                                      database = os.environ['PG_DB'])
+
+        #
+        cursor = connection.cursor()
+
+        pg_query = """
+        SELECT *
+        FROM merged_ratings
+        """
+
+        cursor.execute(pg_query)
+        print("Selecting rows from anime table using cursor.fetchall")
+
+        anime_data = np.array(cursor.fetchall())
+
+        print(anime_data)
+        print("Number of rows: ", len(anime_data,))
+        print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
+        return(anime_data)
+
+    except (Exception, psycopg2.Error) as error :
+        print ("Error while fetching data from PostgreSQL: ", error)
+
+    finally:
+        #closing database connection.
+            if(connection):
+                cursor.close()
+                connection.close()
+                print("PostgreSQL connection is closed")
+
+    print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
+
+def merge_subset_query(anime_chosen):
     t = time.time()
     try:
         # Connecting to PostgreSQL
@@ -46,6 +164,9 @@ def anime_query(anime_chosen):
         print(anime_data)
         print("Number of rows: ", len(anime_data,))
 
+        print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
+        return(anime_data)
+
     except (Exception, psycopg2.Error) as error :
         print ("Error while fetching data from PostgreSQL: ", error)
 
@@ -58,4 +179,7 @@ def anime_query(anime_chosen):
 
     print("Query completed in seconds: ", '{:0.2f}'.format(time.time()-t))
 
-anime_query('Mushishi')
+# merge_subset_query('Mushishi')
+# anime_query()
+# ratings_query()
+# merge_query()
