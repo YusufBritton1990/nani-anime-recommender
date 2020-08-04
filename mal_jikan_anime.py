@@ -18,8 +18,8 @@ col_names = ['anime_id', 'title_japanese', 'title_english', 'image_url',
             'anime_type', 'genres', 'episodes', 'mal_url', 'synopsis',
             'trailer_url','rating', 'members']
 
-first_anime_id = 2010
-last_anime_id = 10000
+first_anime_id = 10001
+last_anime_id = 20000
 
 t = time.time()
 for anime_id in range(first_anime_id, last_anime_id+1):
