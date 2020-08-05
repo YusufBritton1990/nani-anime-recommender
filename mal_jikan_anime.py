@@ -18,11 +18,34 @@ col_names = ['anime_id', 'title_japanese', 'title_english', 'image_url',
             'anime_type', 'genres', 'episodes', 'mal_url', 'synopsis',
             'trailer_url','rating', 'members']
 
-first_anime_id = 10001
-last_anime_id = 20000
+# Takes about 8 hours to look up 20K entries
+first_anime_id = 20010
+last_anime_id = 40000
 
 t = time.time()
 for anime_id in range(first_anime_id, last_anime_id+1):
+
+    # Save data periodically, in case script is interuptted
+    if anime_id % 50 == 0:
+
+        new_df = pd.DataFrame(data, columns = col_names)
+        new_bad_ids_df = pd.DataFrame(bad_ids_list, columns = ['anime_id'])
+
+        df = pd.read_csv('../data/example.csv')
+        bad_ids_df = pd.read_csv('../data/bad_ids.csv')
+
+        df = df.append(new_df, ignore_index=True)
+        bad_ids_df = bad_ids_df.append(new_bad_ids_df, ignore_index=True)
+
+        df.drop_duplicates(inplace=True)
+        bad_ids_df.drop_duplicates(inplace=True)
+
+        # print(df)
+        df.to_csv('../data/example.csv', index=False)
+        bad_ids_df.to_csv('../data/bad_ids.csv', index=False)
+
+        bad_ids_list.clear()
+        data.clear()
 
     try:
         # f"https://api.jikan.moe/v3/anime/{id}(/request)"
@@ -64,9 +87,9 @@ for anime_id in range(first_anime_id, last_anime_id+1):
 
         # Genres
         genre_list = []
-        for i in range(len(anime_json['genres'])):
-            genre_list.append(anime_json['genres'][i]['name'])
-            print("Genre: ",anime_json['genres'][i]['name'])
+        for genre in anime_json['genres']:
+            genre_list.append(genre['name'])
+            print("Genre: ", genre['name'])
 
         genre_list = ', '.join(genre_list)
         anime_list.append(genre_list)
@@ -120,7 +143,7 @@ for anime_id in range(first_anime_id, last_anime_id+1):
         # time.sleep(4)
         continue
 
-print('Number of entries: ', len(data))
+# print('Number of entries: ', len(data))
 # print(anime_list)
 new_df = pd.DataFrame(data, columns = col_names)
 new_bad_ids_df = pd.DataFrame(bad_ids_list, columns = ['anime_id'])

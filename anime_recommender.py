@@ -27,7 +27,7 @@ anime_df = pd.read_sql_query(pg.anime_query(),pg.pg_connection())
 # merged_df = pd.read_sql_query(pg.merge_query(),pg.pg_connection())
 print('Completed in: ', '{:0.2f}'.format(time.time()-start))
 
-chosen_anime = 'Mushishi'
+chosen_anime = 'Kiseijuu: Sei no Kakuritsu'
 param = {'anime' : chosen_anime}
 
 print('Querying subset for: ', chosen_anime)
