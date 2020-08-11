@@ -10,45 +10,59 @@ import time
 reference: https://jikan.docs.apiary.io/#reference/0/anime
 """
 
-data = []
+# data = []
 
-col_names = ['user_id', 'anime_id','rating']
+# col_names = ['user_id', 'anime_id','rating']
+
+# TODO: Need to be able to call next page
 
 t = time.time()
-
-# Get detail information about user
-# param = {'page':1, 'sort' : {'ordered_by': 'score'}}
-# ratings_url = f"https://api.jikan.moe/v3/user/Nekomata1037/animelist/all?page=1&order_by=score&sort=desc"
-ratings_url = f"https://api.jikan.moe/v3/user/ysyouth/animelist/all?page=1&order_by=score&sort=desc"
-
-# This has a user id
-user_url = f"https://api.jikan.moe/v3/user/ysyouth"
-
-
-# Getting the review scores
-# url = f"https://api.jikan.moe/v3/anime/{anime_id}/reviews"
-
-user_r = requests.get(user_url)
-user_json = user_r.json()
-
-ratings_r = requests.get(ratings_url)
-ratings_json = ratings_r.json()
-
-
-# print(json.dumps(ratings_json, indent=2)) #pretty print
-# print(json.dumps(user_json, indent=2)) #pretty print
 
 """
 Data extracted from REST API
 """
 
-print(f'Username: ', user_json['username'])
+def get_anime_rating(mal_user):
+    user_url = f"https://api.jikan.moe/v3/user/{mal_user}"
+    user_r = requests.get(user_url)
+    user_json = user_r.json()
 
-print(f'Username ID: ', user_json['user_id'])
+    print(f'Animes Watched: ', user_json['username'])
+    print(f'Username: ', user_json['username'])
+    print(f'Username ID: ', user_json['user_id'])
 
-for anime in ratings_json['anime']:
-    print(f'Anime: ', anime['title'])
+    page_loop = True
+    page_num = 1
 
-    print(f'Anime ID: ', anime['mal_id'])
+    while page_loop:
+        print("\n Results from page ", page_num, "\n")
+        ratings_url = f"https://api.jikan.moe/v3/user/{mal_user}/animelist/all?page={page_num}&order_by=score&sort=desc"
+        ratings_r = requests.get(ratings_url)
+        ratings_json = ratings_r.json()
 
-    print(f'Rating for Anime: ', anime['score'])
+        for anime in ratings_json['anime']:
+            # When a zero score is encounter, come out of function
+            if anime['score'] == 0:
+                page_loop = False
+                return
+
+            print(f'Anime: ', anime['title'])
+            print(f'Anime ID: ', anime['mal_id'])
+            print(f'Rating for Anime: ', anime['score'])
+
+        try:
+            ratings_json['anime'][299]
+        except IndexError:
+            page_loop = False
+            return
+
+        page_num += 1
+        time.sleep(2)
+
+        # print(json.dumps(ratings_json, indent=2)) #pretty print
+        # print(json.dumps(user_json, indent=2)) #pretty print
+
+# Tests
+# get_anime_rating('Nekomata1037') #One page of animes, many pages of zero
+# get_anime_rating('ysyouth') #One page of animes, just two animes
+# get_anime_rating('spacecowboy') #many animes
