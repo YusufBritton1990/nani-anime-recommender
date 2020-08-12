@@ -19,8 +19,8 @@ col_names = ['anime_id', 'title_japanese', 'title_english', 'image_url',
             'trailer_url','rating', 'members']
 
 # Takes about 8 hours to look up 20K entries
-first_anime_id = 20010
-last_anime_id = 40000
+first_anime_id = 44399
+last_anime_id = 45000
 
 t = time.time()
 for anime_id in range(first_anime_id, last_anime_id+1):
