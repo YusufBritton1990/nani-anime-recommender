@@ -14,8 +14,6 @@ reference: https://jikan.docs.apiary.io/#reference/0/anime
 
 # col_names = ['user_id', 'anime_id','rating']
 
-# TODO: Need to be able to call next page
-
 t = time.time()
 
 """
@@ -27,7 +25,7 @@ def get_anime_rating(mal_user):
     user_r = requests.get(user_url)
     user_json = user_r.json()
 
-    print(f'Animes Watched: ', user_json['username'])
+    print(f'Animes Watched: ', user_json['anime_stats']['total_entries'])
     print(f'Username: ', user_json['username'])
     print(f'Username ID: ', user_json['user_id'])
 
@@ -61,6 +59,7 @@ def get_anime_rating(mal_user):
 
         # print(json.dumps(ratings_json, indent=2)) #pretty print
         # print(json.dumps(user_json, indent=2)) #pretty print
+        # page_loop = False
 
 # Tests
 # get_anime_rating('Nekomata1037') #One page of animes, many pages of zero
