@@ -25,7 +25,6 @@ t = time.time()
 Data extracted from REST API
 """
 
-
 # 500 seconds with a 2 second rest over 16K ratings
 def get_anime_rating(mal_user):
     time.sleep(4)
@@ -43,6 +42,10 @@ def get_anime_rating(mal_user):
 
     user_r = s.get(user_url)
     user_json = user_r.json()
+
+    if user_r.status_code == 404:
+        print(f'User {mal_user} does not exist')
+        return
 
     print(f'Animes Watched: ', user_json['anime_stats']['total_entries'])
     print(f'Username: ', user_json['username'])
@@ -70,13 +73,18 @@ def get_anime_rating(mal_user):
 
         s.mount('https://', HTTPAdapter(max_retries=retries))
 
-
-
         ratings_r = s.get(ratings_url)
+
+        if ratings_r.status_code == 400:
+            print(f'User {mal_user} anime list is restricted')
+            page_loop = False
+            return
+
         ratings_json = ratings_r.json()
 
         # print(json.dumps(ratings_json, indent=2)) #pretty print
 
+        """Looping through a page of anime reviews"""
         for anime in ratings_json['anime']:
             global data
             rating_list = []
@@ -99,19 +107,21 @@ def get_anime_rating(mal_user):
 
             data.append(rating_list)
 
-            """Saving ratings"""
-            """Appending user list"""
-            new_df = pd.DataFrame(data, columns=col_names)
-
-            df = pd.read_csv('../data/mal_ratings.csv')
-            df = df.append(new_df, ignore_index=True)
-
-            df.drop_duplicates(inplace=True)
-
-            df.to_csv('../data/mal_ratings.csv', index=False)
-            rating_list.clear()
-            data.clear()
         """If there are more animes on the next page"""
+
+        """Saving ratings after reading page"""
+        new_df = pd.DataFrame(data, columns=col_names)
+
+        df = pd.read_csv('../data/mal_ratings.csv')
+        df = df.append(new_df, ignore_index=True)
+
+        df.drop_duplicates(inplace=True)
+
+        df.to_csv('../data/mal_ratings.csv', index=False)
+        rating_list.clear()
+        data.clear()
+
+        """Checking to see if there are more pages"""
         try:
             ratings_json['anime'][299]
         except IndexError:
@@ -119,23 +129,23 @@ def get_anime_rating(mal_user):
             return
 
         page_num += 1
-        # page_loop = False
+        page_loop = False
 
 """User files"""
 
 
 
-# friends_df = pd.read_csv('../data/friends.csv')
-#
-# for index, mal_user in friends_df.users.items():
-#     get_anime_rating(mal_user)
+friends_df = pd.read_csv('../data/friends.csv')
+
+for index, mal_user in friends_df.users.items():
+    get_anime_rating(mal_user)
 
 # Tests
 # get_anime_rating('Nekomata1037') #One page of animes, many pages of zero
 # get_anime_rating('ysyouth') #One page of animes, just two animes
 # get_anime_rating('spacecowboy') #many animes
 # get_anime_rating('lita4445') #restrict viewing their animes
-# TODO: put in a try except statement for 400
+# get_anime_rating('UnwaverRewaver')
 
 
 """Saving ratings"""
