@@ -61,6 +61,11 @@ def get_anime_rating(mal_user):
         print(f'Username: ', user_json['username'])
         print(f'Username ID: ', user_json['user_id'])
 
+        if user_json['anime_stats']['total_entries'] == 0:
+            print(f"Skipping {mal_user}, haven't watched any anime")
+            page_loop = False
+            return
+
         print("\n Results from page ", page_num, "\n")
         ratings_url = f"https://api.jikan.moe/v3/user/{mal_user}/animelist/all?page={page_num}&order_by=score&sort=desc"
 
