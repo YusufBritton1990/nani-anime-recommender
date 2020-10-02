@@ -5,6 +5,8 @@ import pandas as pd
 import  numpy as np
 
 import time
+import datetime
+import pytz #allows using tz classes to make UTC time usuable
 
 """
 reference: https://jikan.docs.apiary.io/#reference/0/anime
@@ -16,11 +18,11 @@ data = []
 
 col_names = ['anime_id', 'title_japanese', 'title_english', 'image_url',
             'anime_type', 'genres', 'episodes', 'mal_url', 'synopsis',
-            'trailer_url','rating', 'members']
+            'trailer_url','rating', 'members', 'update_time']
 
 # Takes about 8 hours to look up 20K entries
-first_anime_id = 44399
-last_anime_id = 45000
+first_anime_id = 38262
+last_anime_id = 38262
 
 t = time.time()
 for anime_id in range(first_anime_id, last_anime_id+1):
@@ -128,6 +130,9 @@ for anime_id in range(first_anime_id, last_anime_id+1):
         # print('Number of columns: ', len(col_names))
         # print('Number of entries: ', len(anime_list))
 
+        print('Saving at:', datetime.datetime.now(pytz.utc))
+        anime_list.append(datetime.datetime.now(pytz.utc))
+
         data.append(anime_list)
         time.sleep(2)
 
@@ -139,7 +144,9 @@ for anime_id in range(first_anime_id, last_anime_id+1):
 
     except KeyError:
         print(f'Anime ID {anime_id} does not exist')
-        bad_ids_list.append(anime_id)
+        print('Saving at:', datetime.datetime.now(pytz.utc))
+
+        bad_ids_list.append(anime_id, datetime.datetime.now(pytz.utc))
         # time.sleep(4)
         continue
 
@@ -154,8 +161,8 @@ bad_ids_df = pd.read_csv('../data/bad_ids.csv')
 df = df.append(new_df, ignore_index=True)
 bad_ids_df = bad_ids_df.append(new_bad_ids_df, ignore_index=True)
 
-df.drop_duplicates(inplace=True)
-bad_ids_df.drop_duplicates(inplace=True)
+df.drop_duplicates(subset='anime_id', keep='last', inplace=True)
+bad_ids_df.drop_duplicates(subset='anime_id', keep="last", inplace=True)
 
 # print(df)
 df.to_csv('../data/example.csv', index=False)

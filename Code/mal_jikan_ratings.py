@@ -7,6 +7,8 @@ import pandas as pd
 import  numpy as np
 
 import time
+import datetime
+import pytz #allows using tz classes to make UTC time usuable
 
 """
 reference: https://jikan.docs.apiary.io/#reference/0/anime
@@ -107,6 +109,9 @@ def get_anime_rating(mal_user):
             rating_list.append(anime['mal_id'])
             rating_list.append(anime['score'])
 
+            print('Saving at:', datetime.datetime.now(pytz.utc))
+            rating_list.append(datetime.datetime.now(pytz.utc))
+
             print('Below is the list of rating data')
             print(rating_list)
 
@@ -137,17 +142,15 @@ def get_anime_rating(mal_user):
         page_loop = False
 
 """User files"""
+# Using friends file
+# friends_df = pd.read_csv('../data/friends.csv')
 
-
-
-friends_df = pd.read_csv('../data/friends.csv')
-
-for index, mal_user in friends_df.users.items():
-    get_anime_rating(mal_user)
+# for index, mal_user in friends_df.users.items():
+#     get_anime_rating(mal_user)
 
 # Tests
 # get_anime_rating('Nekomata1037') #One page of animes, many pages of zero
-# get_anime_rating('ysyouth') #One page of animes, just two animes
+get_anime_rating('ysyouth') #One page of animes, just two animes
 # get_anime_rating('spacecowboy') #many animes
 # get_anime_rating('lita4445') #restrict viewing their animes
 # get_anime_rating('UnwaverRewaver')
@@ -160,7 +163,7 @@ new_df = pd.DataFrame(data, columns=col_names)
 df = pd.read_csv('../data/mal_ratings.csv')
 df = df.append(new_df, ignore_index=True)
 
-df.drop_duplicates(inplace=True)
+df.drop_duplicates(subset=['user_id', 'anime_id'], keep='last', inplace=True)
 
 df.to_csv('../data/mal_ratings.csv', index=False)
 data.clear()
