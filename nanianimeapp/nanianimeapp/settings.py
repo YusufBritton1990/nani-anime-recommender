@@ -76,8 +76,12 @@ WSGI_APPLICATION = 'nanianimeapp.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'NANI_ANIME',
+        'USER': 'postgres',
+        'PASSWORD': os.environ['POSTGRES_PASS'],
+        'HOST': '127.0.0.1',
+        'PORT': '5432',
     }
 }
 
