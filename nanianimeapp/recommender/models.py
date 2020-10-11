@@ -15,6 +15,8 @@ class mal_anime_prod(models.Model):
     rating = models.DecimalField(null=True,max_digits=4,decimal_places=2)
     members = models.IntegerField(null=True)
     update_time = models.DateTimeField(auto_now=True)
+    def __str__(self):
+        return self.title_japanese #returns japanese name when object queried
 
 
 class mal_user_prod(models.Model):
