@@ -7,22 +7,19 @@
       <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
       <link href="https://fonts.googleapis.com/css2?family=Ubuntu&display=swap" rel="stylesheet">
       <meta charset="utf-8">
-      <title>Anime Detail for: {{ chosen_anime.title_japanese }} </title>
+      <title></title>
    </head>
    <body>
       <div class="main">
          <div class="row">
             <div class="column blue-box">
-               <h1 class="anime-title"> {{ chosen_anime.title_japanese }}
-                  <i style="color:#484848">({{ chosen_anime.title_english }})</i>
-               </h1>
-               <img src="{{ chosen_anime.image_url }}" class="cover-img"
-               alt="{{ chosen_anime.title_japanese }}">
+               <h1 class="anime-title">Mushi-shi <i style="color:#484848">(Mushishi)</i></h1>
+               <img src="https://cdn.myanimelist.net/images/anime/2/73862.jpg" class="cover-img" alt="Mushi-shi">
                <span style="font-size: 22px;">
-                  <p><strong>Type:</strong> {{ chosen_anime.anime_type }}</p>
-                  <p><strong>Genres:</strong> {{ chosen_anime.genres }}</p>
-                  <p><strong>Episodes:</strong> {{ chosen_anime.episodes }}</p>
-                  <p><a href="{{ chosen_anime.mal_url }}" target="_blank">Link to MyAnimeList page</a></p>
+                  <p><strong>Type:</strong> Anime</p>
+                  <p><strong>Genres:</strong> Adventure, Slice of Life, Mystery, Historical, Supernatural, Fantasy, Seinen</p>
+                  <p><strong>Episodes:</strong> 26</p>
+                  <p><a href="https://myanimelist.net/anime/457/Mushishi" target="_blank">Link to MyAnimeList page</a></p>
                </span>
             </div>
             <div class="column">
@@ -30,8 +27,8 @@
                <div class="center-text">
                   <button type="button" name="button" class="anime-back-button"><span>Back to recommended Animes</span>
                   </button>
-                  <p>Overall MyAnimeList Rating: {{ chosen_anime.rating }}</p>
-                  <p># of MyAnimeList members Reviews: {{ chosen_anime.members }} Users</p>
+                  <p>Overall MyAnimeList Rating: 8.70</p>
+                  <p># of MyAnimeList members Reviews: 190,406 Users</p>
 
                   <!-- Static star chart -->
                   <span class="heading">NANI Anime user reviews</span>
@@ -110,18 +107,16 @@
          <h2 style="text-align: center;">Synopsis</h2>
          <hr style="width:90%; height:10px; color: gray; background-color:gray; border-radius: 15px;">
 
-         <div class="row2">
+         <iframe class="video-player" src="https://www.youtube.com/embed/h371H0KIuPo?enablejsapi=1&wmode=opaque&autoplay=1
+" height="250"></iframe>
+         <div class="synopsis">
+            "Mushi": the most basic forms of life in the world. They exist without any goals or purposes aside from simply "being." They are beyond the shackles of the words "good" and "evil." <br><br>
 
-            <div class="column3">
-               <iframe class="video-player" src="{{ chosen_anime.trailer_url }}"
-               height="250"></iframe>
-            </div>
+            Mushi can exist in countless forms and are capable of mimicking things from the natural world such as plants, diseases, and even phenomena like rainbows. This is, however, just a vague definition of these entities that inhabit the vibrant world of Mushishi, as to even call them a form of life would be an oversimplification. <br><br>
 
-            <div class="column2">
-               <div class="synopsis">
-                  {{ chosen_anime.synopsis }}
-               </div>
-            </div>
+            Detailed information on Mushi is scarce because the majority of humans are unaware of their existence. So what are Mushi and why do they exist? This is the question that a "Mushishi," Ginko, ponders constantly. Mushishi are those who research Mushi in hopes of understanding their place in the world's hierarchy of life. <br><br>
+
+            Ginko chases rumors of occurrences that could be tied to Mushi, all for the sake of finding an answer. It could, after all, lead to the meaning of life itself. <br>[Written by MyAnimeList Rewrite]
 
          </div>
 
