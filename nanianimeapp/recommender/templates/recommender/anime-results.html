@@ -1,0 +1,35 @@
+{% extends 'recommender/base.html' %}
+{% block content %}
+
+<div class="anime-results-title">
+   Anime Recommendations
+</div>
+
+<div class="main">
+   <table class="results-table">
+      <tr>
+         <th>Image</th>
+         <th>Anime</th>
+         <th>Genre</th>
+         <th>About</th>
+      </tr>
+
+      {%for item in anime_id_list%}
+         <tr>
+            <td>
+               <img src="{{ item.image_url }}"  alt="{{ item.image_url }}">
+            </td>
+            <td>
+               <a href="{% url 'detail' anime_id=item.anime_id %}">
+                  {{ item.title_english }}
+               </a>
+            </td>
+            <td>{{ item.genres }}</td>
+            <td>{{ item.synopsis|slice:"0:300"}}...</td>
+         </tr>
+      {% endfor %}
+
+   </table>
+</div>
+
+{% endblock content %}

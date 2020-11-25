@@ -17,6 +17,18 @@ def index(request):
 
     # except
 
+def anime_results(request):
+    # Store the id from the recommender like this
+    # anime_id_list = [1,2,3,4,5]
+
+    # sampling what it will look like
+    anime1 = mal_anime_prod.objects.get(anime_id=1)
+    anime2 = mal_anime_prod.objects.get(anime_id=5)
+
+    anime_id_list = {anime1, anime2}
+
+    return render(request, 'recommender/anime-results.html', {'anime_id_list' : anime_id_list})
+
 def anime_detail(request, anime_id):
     # Call to most recent anime data
     data = get_anime(anime_id,anime_id)
@@ -27,6 +39,7 @@ def anime_detail(request, anime_id):
     if data[12].day <  today.day:
         print(f'updating anime id {anime_id} at {data[12]}')
 
+        # NOTE: trailer_url is omiting query parameters
         update_anime_detail = mal_anime_prod.objects.filter(pk=anime_id).update(
         title_japanese = data[1], title_english = data[2],
         image_url = data[3], anime_type = data[4],
