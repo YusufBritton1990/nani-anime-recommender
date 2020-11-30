@@ -1,11 +1,13 @@
 {% extends 'recommender/base.html' %}
 {% block content %}
 
+<!-- TODO: Create make another search button -->
+
 <div class="anime-results-title">
    Anime Recommendations
 </div>
 
-<div class="main">
+<div class="main-round">
    <table class="results-table">
       <tr>
          <th>Image</th>
@@ -14,7 +16,7 @@
          <th>About</th>
       </tr>
 
-      {%for item in anime_id_list%}
+      {%for item in object_list %}
          <tr>
             <td>
                <img src="{{ item.image_url }}"  alt="{{ item.image_url }}">

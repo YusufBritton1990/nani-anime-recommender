@@ -1,0 +1,16 @@
+{% extends 'recommender/base.html' %}
+{% block content %}
+
+<div class="anime-results-title">
+   Search for recommendations for this anime:
+</div>
+
+<div class="center-text">
+   <form action="{% url 'results' %}" method="get">
+     <input name="q" type="text" placeholder="Search...">
+   </form>
+
+   <!-- <button type="button" name="button" class="orange-button">Signup</button> -->
+</div>
+
+{% endblock content %}

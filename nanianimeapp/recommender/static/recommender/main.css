@@ -10,7 +10,7 @@ body {
    padding: 20px;
 }
 
-.main {
+.main-round {
    background-color: white;
    margin: 30px;
    margin-bottom: 50px;
@@ -65,7 +65,7 @@ body {
 
 .anime-title {
    color: white;
-   background-color: #F98125;
+   background-color: #F98125; /*orange*/
    font-style: bold;
    text-align: center;
    /* margin-top: -10px; */
@@ -119,6 +119,10 @@ body {
   box-shadow: 0 8px 12px 0 rgba(0,0,0,0.16), 0 17px 50px 0 rgba(0,0,0,0.19);
   width: 280px;
   height: 40px;
+}
+
+.orange-button {
+   background-color: #F98125;
 }
 
 .cover-img {

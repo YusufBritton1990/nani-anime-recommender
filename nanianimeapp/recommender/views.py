@@ -1,33 +1,42 @@
 from django.shortcuts import render, get_object_or_404
+from django.views.generic import TemplateView, ListView
 from django.http import Http404
-# from django.template import loader
+from django.db.models import Q
+
 from .models import mal_anime_prod
 
 from .scripts.mal_jikan_anime import get_anime
 
 import datetime
 
-def index(request):
-    # TODO: Include context to dynamically load pages
-    # TODO: Include 404 if page doesn't exist
-    # https://docs.djangoproject.com/en/3.1/intro/tutorial03/
-    # try:
+def anime_recommender(request):
+    return render(request, 'recommender/index.html')
 
-    return render(request, 'recommender/anime-detail-draft.html')
+class anime_results(ListView):
+    model = mal_anime_prod
+    template_name = 'recommender/anime-results.html'
 
-    # except
+    def get_queryset(self): # new
+        query = self.request.GET.get('q')
+        # print(query)
+        object_list  = mal_anime_prod.objects.filter(
+                Q(title_japanese__icontains=query) |
+                 Q(title_english__icontains=query)
+            )
 
-def anime_results(request):
+        return object_list
+
+# def anime_results(request):
     # Store the id from the recommender like this
     # anime_id_list = [1,2,3,4,5]
 
     # sampling what it will look like
-    anime1 = mal_anime_prod.objects.get(anime_id=1)
-    anime2 = mal_anime_prod.objects.get(anime_id=5)
+    # anime1 = mal_anime_prod.objects.get(anime_id=1)
+    # anime2 = mal_anime_prod.objects.get(anime_id=5)
 
-    anime_id_list = {anime1, anime2}
-
-    return render(request, 'recommender/anime-results.html', {'anime_id_list' : anime_id_list})
+    # anime_id_list = {anime1, anime2}
+    #
+    # return render(request, 'recommender/anime-results.html', {'anime_id_list' : anime_id_list})
 
 def anime_detail(request, anime_id):
     # Call to most recent anime data
