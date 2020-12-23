@@ -1,15 +1,54 @@
+# django packages
 from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView
-from django.http import Http404
-from django.db.models import Q
+from django.http import Http404, JsonResponse
+from django.db.models import Q #needed for complex queries
 
+# models
 from .models import mal_anime_prod
 
+# scripts
 from .scripts.mal_jikan_anime import get_anime
+from dal import autocomplete
 
 import datetime
 
+class AnimeAutocomplete(autocomplete.Select2QuerySetView):
+    def get_queryset(self):
+        # Don't forget to filter out results depending on the visitor !
+        # if not self.request.user.is_authenticated:
+        #     return mal_anime_prod.objects.none()
+
+        qs = mal_anime_prod.objects.all()
+
+        if self.q:
+            qs = qs.exclude(members__isnull=True).filter(
+                    Q(title_japanese__icontains=self.q) |
+                     Q(title_english__icontains=self.q)
+                ).order_by('-members')[:10]
+
+        return qs
+
 def anime_recommender(request):
+    if 'term' in request.GET:
+        query = self.request.GET.get('term')
+
+        print(query)
+        # Getting queryset of 5 animes in search bar
+        qs = mal_anime_prod.objects.filter(
+                Q(title_japanese__icontains=query) |
+                 Q(title_english__icontains=query)
+            ).order_by('-members')
+
+        print(qs)
+        anime_titles_list = list()
+
+        for anime in qs:
+            anime_titles_list.append(anime)
+
+        # safe=False passed since a list is return. normal, a dict is passed
+        return JsonResponse(anime_titles_list, safe=False)
+
     return render(request, 'recommender/index.html')
 
 class anime_results(ListView):
@@ -17,12 +56,12 @@ class anime_results(ListView):
     template_name = 'recommender/anime-results.html'
 
     def get_queryset(self): # new
-        query = self.request.GET.get('q')
+        query = self.request.GET.get('term')
         # print(query)
-        object_list  = mal_anime_prod.objects.filter(
+        object_list  = mal_anime_prod.objects.exclude(members__isnull=True).filter(
                 Q(title_japanese__icontains=query) |
                  Q(title_english__icontains=query)
-            )
+            ).order_by('-members')[:5]
 
         return object_list
 

@@ -11,9 +11,9 @@ import time
 
 import numpy as np
 import pandas as pd
-import matplotlib.pyplot as plt
-import seaborn as sns
-sns.set_style('whitegrid')
+# import matplotlib.pyplot as plt
+# import seaborn as sns
+# sns.set_style('whitegrid')
 # %matplotlib inline #Used in jupyter notebook
 
 start = time.time()
@@ -27,7 +27,7 @@ anime_df = pd.read_sql_query(pg.anime_query(),pg.pg_connection())
 # merged_df = pd.read_sql_query(pg.merge_query(),pg.pg_connection())
 print('Completed in: ', '{:0.2f}'.format(time.time()-start))
 
-chosen_anime = 'Kiseijuu: Sei no Kakuritsu'
+chosen_anime = 'Hajime no Ippo'
 param = {'anime' : chosen_anime}
 
 print('Querying subset for: ', chosen_anime)

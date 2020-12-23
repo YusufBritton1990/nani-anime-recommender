@@ -29,8 +29,10 @@ ALLOWED_HOSTS = []
 
 
 # Application definition
-
+# dal used in django autocomplete https://django-autocomplete-light.readthedocs.io/en/master/install.html
 INSTALLED_APPS = [
+    'dal',
+    'dal_select2',
     'recommender.apps.RecommenderConfig',
     'django.contrib.admin',
     'django.contrib.auth',

@@ -19,7 +19,7 @@ def pg_connection():
 def anime_query():
     pg_query = """
     SELECT *
-    FROM mal_anime
+    FROM recommender_mal_anime_prod
     """
 
     return pg_query
@@ -27,14 +27,15 @@ def anime_query():
 def ratings_query():
     pg_query = """
     SELECT *
-    FROM mal_ratings
+    FROM recommender_mal_ratings_prod
     """
     return pg_query
 
+# 
 def merge_query():
     pg_query = """
     SELECT *
-    FROM merged_ratings
+    FROM merged_ratings_prod
     """
 
     return pg_query
@@ -43,12 +44,12 @@ def merge_subset_query():
     pg_query = """
     WITH chosen_anime_users AS (
 	SELECT DISTINCT user_id
-	FROM merged_ratings
+	FROM merged_ratings_prod
 	WHERE name = %(anime)s --Will use python to insert this
     )
 
     SELECT mr.*
-    FROM merged_ratings mr
+    FROM merged_ratings_prod mr
     JOIN chosen_anime_users ca
     ON mr.user_id = ca.user_id
     WHERE mr.user_id = ca.user_id;

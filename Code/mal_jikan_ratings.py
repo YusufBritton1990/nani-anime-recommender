@@ -150,7 +150,7 @@ def get_anime_rating(mal_user):
 
 # Tests
 # get_anime_rating('Nekomata1037') #One page of animes, many pages of zero
-get_anime_rating('ysyouth') #One page of animes, just two animes
+# get_anime_rating('ysyouth') #One page of animes, just two animes
 # get_anime_rating('spacecowboy') #many animes
 # get_anime_rating('lita4445') #restrict viewing their animes
 # get_anime_rating('UnwaverRewaver')
