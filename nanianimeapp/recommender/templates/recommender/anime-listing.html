@@ -1,0 +1,40 @@
+{% extends 'recommender/base.html' %}
+{% block content %}
+
+<!-- TODO: Create make another search button -->
+
+<div class="anime-results-title">
+   Animes matching search
+</div>
+
+<div class="main-round">
+
+   {%for item in animes %}
+      <br>
+      <img src="{{ item.image_url }}"  alt="{{ item.image_url }}">
+      {{ item.title_japanese }}({{ item.title_english }})
+      <br>
+   {% endfor %}
+
+</div>
+
+<!-- Pagination navigation -->
+<div class="pagination">
+    <span class="step-links">
+        {% if animes.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ animes.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ animes.number }} of {{ animes.paginator.num_pages }}.
+        </span>
+
+        {% if animes.has_next %}
+            <a href="?page={{ animes.next_page_number }}">next</a>
+            <a href="?page={{ animes.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}

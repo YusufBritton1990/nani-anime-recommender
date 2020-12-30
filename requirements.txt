@@ -4,6 +4,7 @@ certifi==2020.6.20
 chardet==3.0.4
 distlib==0.3.1
 Django==3.1.2
+-e git+https://github.com/yourlabs/django-autocomplete-light.git@10d7f2c5f2bf6a1f39207f861ef2f47616420e3a#egg=django_autocomplete_light
 filelock==3.0.12
 idna==2.10
 numpy==1.19.2

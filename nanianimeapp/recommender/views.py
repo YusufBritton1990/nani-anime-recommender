@@ -3,53 +3,48 @@ from django.shortcuts import render, get_object_or_404
 from django.views.generic import TemplateView, ListView
 from django.http import Http404, JsonResponse
 from django.db.models import Q #needed for complex queries
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 
 # models
-from .models import mal_anime_prod
+from recommender.models import mal_anime_prod
 
 # scripts
-from .scripts.mal_jikan_anime import get_anime
-from dal import autocomplete
+from recommender.scripts.mal_jikan_anime import get_anime
+# from dal import autocomplete #update settings too
 
+# Misc
 import datetime
 
-class AnimeAutocomplete(autocomplete.Select2QuerySetView):
-    def get_queryset(self):
-        # Don't forget to filter out results depending on the visitor !
-        # if not self.request.user.is_authenticated:
-        #     return mal_anime_prod.objects.none()
+def anime_search(request):
+    return render(request, 'recommender/index.html')
 
-        qs = mal_anime_prod.objects.all()
 
-        if self.q:
-            qs = qs.exclude(members__isnull=True).filter(
-                    Q(title_japanese__icontains=self.q) |
-                     Q(title_english__icontains=self.q)
-                ).order_by('-members')[:10]
+def anime_listing(request):
+    """List animes to select from that contains searched term"""
+    anime_list  = mal_anime_prod.objects.all()
+    query = request.GET.get('q')
 
-        return qs
-
-def anime_recommender(request):
-    if 'term' in request.GET:
-        query = self.request.GET.get('term')
-
-        print(query)
-        # Getting queryset of 5 animes in search bar
-        qs = mal_anime_prod.objects.filter(
+    if query:
+        anime_list  = mal_anime_prod.objects.exclude(members__isnull=True).filter(
                 Q(title_japanese__icontains=query) |
                  Q(title_english__icontains=query)
             ).order_by('-members')
 
-        print(qs)
-        anime_titles_list = list()
+    paginator = Paginator(anime_list, 9)
+    page = request.GET.get('page')
 
-        for anime in qs:
-            anime_titles_list.append(anime)
+    try:
+        anime_list = paginator.page(page)
+    except PageNotAnInteger:
+        anime_list = paginator.page(1)
+    except EmptyPage:
+        anime_list = paginator.page(paginator.num_pages)
 
-        # safe=False passed since a list is return. normal, a dict is passed
-        return JsonResponse(anime_titles_list, safe=False)
 
-    return render(request, 'recommender/index.html')
+    context = {'animes' : anime_list}
+
+    return render(request, 'recommender/anime-listing.html', context)
+
 
 class anime_results(ListView):
     model = mal_anime_prod
@@ -65,17 +60,6 @@ class anime_results(ListView):
 
         return object_list
 
-# def anime_results(request):
-    # Store the id from the recommender like this
-    # anime_id_list = [1,2,3,4,5]
-
-    # sampling what it will look like
-    # anime1 = mal_anime_prod.objects.get(anime_id=1)
-    # anime2 = mal_anime_prod.objects.get(anime_id=5)
-
-    # anime_id_list = {anime1, anime2}
-    #
-    # return render(request, 'recommender/anime-results.html', {'anime_id_list' : anime_id_list})
 
 def anime_detail(request, anime_id):
     # Call to most recent anime data
@@ -100,3 +84,25 @@ def anime_detail(request, anime_id):
     # Rendering
     chosen_anime = get_object_or_404(mal_anime_prod, pk=anime_id)
     return render(request, 'recommender/anime-detail.html', {'chosen_anime' : chosen_anime})
+
+
+# Pending
+    # TODO: Javascript autocomplete not connecting to models as a string. Test using
+    # Djando autocomplete classes
+    # ref: https://django-autocomplete-light.readthedocs.io/en/master/tutorial.html
+
+    # class AnimeAutocomplete(autocomplete.Select2QuerySetView):
+    #     def get_queryset(self):
+    #         # Don't forget to filter out results depending on the visitor !
+    #         # if not self.request.user.is_authenticated:
+    #         #     return mal_anime_prod.objects.none()
+    #
+    #         qs = mal_anime_prod.objects.all()
+    #
+    #         if self.q:
+    #             qs = qs.exclude(members__isnull=True).filter(
+    #                     Q(title_japanese__icontains=self.q) |
+    #                      Q(title_english__icontains=self.q)
+    #                 ).order_by('-members')[:10]
+    #
+    #         return qs

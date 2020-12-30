@@ -6,26 +6,33 @@
 </div>
 
 <div class="center-text">
-   <form action="{% url 'results' %}" method="get">
+   <form action="{% url 'listing' %}" method="get">
+      <div class="input-field">
+
       <label for="anime-search-bar"></label>
-     <input id="anime-search-bar" name="term" type="text" placeholder="Search...">
+      <input id="anime-search-bar" name="q" type="text" placeholder="Search..."
+      value="{{ request.GET.q }}">
+      <button class="btn" type="submit" name="action">Search</button>
+
+      </div>
    </form>
 
    <!-- <button type="button" name="button" class="orange-button">Signup</button> -->
 </div>
 
+<!-- TODO: autocomplete not working, look at recommender.views for notes -->
 <!-- Needed for autocomplete -->
-<script src="https://code.jquery.com/jquery-1.12.4.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<!-- <script src="https://code.jquery.com/jquery-1.12.4.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script> -->
 
 <!-- List of autocomplete items -->
-<script>
+<!-- <script>
   $( function() {
     $( "#anime-search-bar" ).autocomplete({
       source: '{$ url 'anime-autocomplete' $}'
       // source: ['apples','bananas', 'cinnamon']
     });
   } );
-  </script>
+  </script> -->
 
 {% endblock content %}
