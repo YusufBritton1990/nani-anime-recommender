@@ -20,7 +20,7 @@ def anime_search(request):
 
 
 def anime_listing(request):
-    """List animes to select from that contains searched term"""
+    """List animes to select from that contains searched term (q)"""
     anime_list  = mal_anime_prod.objects.all()
     query = request.GET.get('q')
 
@@ -40,7 +40,6 @@ def anime_listing(request):
     except EmptyPage:
         anime_list = paginator.page(paginator.num_pages)
 
-
     context = {'animes' : anime_list}
 
     return render(request, 'recommender/anime-listing.html', context)
@@ -51,7 +50,7 @@ class anime_results(ListView):
     template_name = 'recommender/anime-results.html'
 
     def get_queryset(self): # new
-        query = self.request.GET.get('term')
+        query = self.request.GET.get('q')
         # print(query)
         object_list  = mal_anime_prod.objects.exclude(members__isnull=True).filter(
                 Q(title_japanese__icontains=query) |

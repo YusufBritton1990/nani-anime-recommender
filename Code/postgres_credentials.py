@@ -9,53 +9,53 @@ import time
 
 # https://pynative.com/python-postgresql-select-data-from-table/
 def pg_connection():
-    connection = psycopg2.connect(user = os.environ['PG_USER'],
-                              password = os.environ['POSTGRES_PASS'],
-                              host = "127.0.0.1",
-                              port = "5432",
-                              database = os.environ['PG_DB'])
-    return connection
+connection = psycopg2.connect(user = os.environ['PG_USER'],
+          password = os.environ['POSTGRES_PASS'],
+          host = "127.0.0.1",
+          port = "5432",
+          database = os.environ['PG_DB'])
+return connection
 
 def anime_query():
-    pg_query = """
-    SELECT *
-    FROM recommender_mal_anime_prod
-    """
+pg_query = """
+SELECT *
+FROM recommender_mal_anime_prod
+"""
 
-    return pg_query
+return pg_query
 
 def ratings_query():
-    pg_query = """
-    SELECT *
-    FROM recommender_mal_ratings_prod
-    """
-    return pg_query
+pg_query = """
+SELECT *
+FROM recommender_mal_ratings_prod
+"""
+return pg_query
 
-# 
+#
 def merge_query():
-    pg_query = """
-    SELECT *
-    FROM merged_ratings_prod
-    """
+pg_query = """
+SELECT *
+FROM merged_ratings_prod
+"""
 
-    return pg_query
+return pg_query
 
 def merge_subset_query():
-    pg_query = """
-    WITH chosen_anime_users AS (
-	SELECT DISTINCT user_id
-	FROM merged_ratings_prod
-	WHERE name = %(anime)s --Will use python to insert this
-    )
+pg_query = """
+WITH chosen_anime_users AS (
+SELECT DISTINCT user_id
+FROM merged_ratings_prod
+WHERE name = %(anime)s --Will use python to insert this
+)
 
-    SELECT mr.*
-    FROM merged_ratings_prod mr
-    JOIN chosen_anime_users ca
-    ON mr.user_id = ca.user_id
-    WHERE mr.user_id = ca.user_id;
-    """
+SELECT mr.*
+FROM merged_ratings_prod mr
+JOIN chosen_anime_users ca
+ON mr.user_id = ca.user_id
+WHERE mr.user_id = ca.user_id;
+"""
 
-    return pg_query
+return pg_query
 
 
 # def local_pg_query(anime_chosen):
