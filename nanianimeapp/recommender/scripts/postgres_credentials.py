@@ -26,9 +26,9 @@ def anime_query():
     return pg_query
 
 def ratings_query():
-    pg_query = """T
+    pg_query = """
     SELECT *
-    FROM recommender_mal_ratings_prod
+    FROM recommender_mal_rating_prod
     """
     return pg_query
 
@@ -62,12 +62,13 @@ def merge_refresh_query():
 
     return pg_query
 
+
 def merge_subset_query():
     pg_query = """
     WITH chosen_anime_users AS (
 	SELECT DISTINCT user_id_id
 	FROM recommender_mal_merged_ratings_prod
-	WHERE title_japanese = %(anime)s --Will use python to insert this
+	WHERE anime_id_id = %(chosen_anime_id)s --Will use python to insert this
     )
 
     SELECT mr.*
