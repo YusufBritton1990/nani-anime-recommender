@@ -1,4 +1,4 @@
-import postgres_credentials as pg
+from recommender.scripts import postgres_credentials as pg
 import time
 import numpy as np
 import pandas as pd
@@ -14,6 +14,7 @@ def get_recommendation(chosen_anime_id):
     start = time.time()
 
     """Assigning Dataframes"""
+    print('Gathering Recommendations: ', chosen_anime_id)
 
     print('Querying Animes')
     anime_df = pd.read_sql_query(pg.anime_query(),pg.pg_connection())
@@ -69,7 +70,6 @@ def get_recommendation(chosen_anime_id):
 # chosen_anime = 'Hajime no Ippo'
 # chosen_anime = 'Naruto'
 # chosen_anime = 20
-chosen_anime = 263
-
-print('Gathering Recommendations: ', chosen_anime)
-print(get_recommendation(chosen_anime))
+# chosen_anime = 263
+#
+# print(get_recommendation(chosen_anime))
