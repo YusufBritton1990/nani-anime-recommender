@@ -10,19 +10,19 @@ from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from recommender.models import mal_anime_prod
 
 # scripts
-from recommender.scripts.mal_jikan_anime import get_anime
+# from recommender.scripts.mal_jikan_anime import get_anime
+from recommender.scripts.mal_api_anime import get_anime
 from recommender.scripts.anime_recommender import get_recommendation
 # from dal import autocomplete #update settings too
 
 # Misc
 import datetime
+import pytz #allows using tz classes to make UTC time usuable
 import os
 import requests
 
+
 def anime_search(request):
-    print("printing request data")
-    # if request.method == "POST"
-    print(request.method)
     return render(request, 'recommender/index.html')
 
 def mal_auth(request):
@@ -69,13 +69,22 @@ def mal_auth_response(request):
         'code_verifier': os.environ['MAL_CODE_VERIFIER']
     }
 
+    # External call for token data, using requests library
     response = requests.post(base_url, data=data)
     response_dict = response.json()
 
-    print(f"Token Type: {response_dict['token_type']}")
-    print(f"Expires in:  {response_dict['expires_in']}")
-    print(f"Access Token: {response_dict['access_token']}")
-    print(f"Refresh Token: {response_dict['refresh_token']}")
+    # TODO: This information needs to be stored once user is authenticated.
+    # Need to add this into the user app once created
+    # print(f"Token Type: {response_dict['token_type']}")
+    # print(f"Expires in:  {response_dict['expires_in']}")
+    # print(f"Access Token: {response_dict['access_token']}")
+    # print(f"Refresh Token: {response_dict['refresh_token']}")
+
+    # TODO: Temporary, need to store this in a database when user app created
+    # which will be used for each user
+
+    # Saving data within a session
+    request.session['access_token']  = response_dict['access_token']
 
     return redirect('search')
 
@@ -126,23 +135,69 @@ class anime_results(ListView):
 
 
 def anime_detail(request, anime_id):
-    # Call to most recent anime data
-    data = get_anime(anime_id,anime_id)
+    # Check if database is updated for today
+    today = datetime.date.today().strftime('%Y-%m-%d')
 
-    # update anime database will called values
-    today = datetime.date.today()
+    db_anime_time = mal_anime_prod.objects.get(pk=anime_id).update_time
+    db_anime_date = db_anime_time.strftime('%Y-%m-%d')
 
-    if data[12].day <  today.day:
-        print(f'updating anime id {anime_id} at {data[12]}')
+    # if the query date isnt the same day, update anime detail
+    if db_anime_date != today:
+        print(f'\nupdating anime id {anime_id} at {db_anime_time}\n')
+
+        # Call to most recent anime data
+        access_token = request.session['access_token'] #needed to use MAL api
+        # anime_dict = get_anime(anime_id,anime_id, access_token)
+        anime_json = get_anime(anime_id,anime_id, access_token)[0]
 
         # NOTE: trailer_url is omiting query parameters
+        # TODO: Need to be able to update trailer_url
+        # update_anime_detail = mal_anime_prod.objects.filter(pk=anime_id).update(
+        # title_japanese = anime_dict['title_japanese'],
+        # title_english = anime_dict['title_english'],
+        # image_url = anime_dict['image_url'],
+        # anime_type = anime_dict['anime_type'],
+        # genres = anime_dict['genres'], episodes = anime_dict['episodes'],
+        # mal_url = anime_dict['mal_url'], synopsis = anime_dict['synopsis'],
+        # rating = anime_dict['rating'],
+        # # trailer_url = data[9].split('?')[0], rating = data[10],
+        # members = anime_dict['members'], update_time = anime_dict['update_time']
+        # )
+
+        # try statements
+        try:
+            title_english = anime_json['alternative_titles']['en']
+        # print("Name of anime (English): ",anime_json['alternative_titles']['en'])
+
+        except TypeError:
+            title_english = None
+
+        # genres
+        genre_list = []
+        for genre in anime_json['genres']:
+            genre_list.append(genre['name'])
+            # print("Genre: ", genre['name'])
+        genre_list = ', '.join(genre_list)
+
+        # urls
+        base_url = "https://myanimelist.net/anime"
+        mal_title = anime_json['title'].replace(" ", "_")
+        mal_url = f"{base_url}/{anime_json['id']}/{mal_title}"
+
+        # update_time
+        update_time = datetime.datetime.now(pytz.utc)
+
+        # updating anime with new infomation
         update_anime_detail = mal_anime_prod.objects.filter(pk=anime_id).update(
-        title_japanese = data[1], title_english = data[2],
-        image_url = data[3], anime_type = data[4],
-        genres = data[5], episodes = data[6],
-        mal_url = data[7], synopsis = data[8],
-        trailer_url = data[9].split('?')[0], rating = data[10],
-        members = data[11], update_time = data[12]
+        title_japanese = anime_json['title'],
+        title_english = title_english,
+        image_url = anime_json['main_picture']['medium'],
+        anime_type = anime_json['media_type'],
+        genres = genre_list, episodes = anime_json['num_episodes'],
+        mal_url = mal_url, synopsis = anime_json['synopsis'],
+        rating = anime_json['mean'],
+        # trailer_url = data[9].split('?')[0], rating = data[10],
+        members = anime_json['num_scoring_users'], update_time = update_time
         )
 
     # Rendering

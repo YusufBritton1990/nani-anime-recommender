@@ -12,7 +12,13 @@
    {%for item in animes %}
       <br>
       <img src="{{ item.image_url }}"  alt="{{ item.image_url }}">
-      {{ item.title_japanese }}({{ item.title_english }})
+
+      <!-- TODO: Temporary, sending to anime detail. Needs to redirect to
+      processing, then to results-->
+      <a href="{% url 'detail' anime_id=item.anime_id %}">
+         {{ item.title_japanese }}({{ item.title_english }})
+      </a>
+
       <br>
    {% endfor %}
 
